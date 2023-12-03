@@ -14,9 +14,14 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 
-static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",   NULL };
-static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",   NULL };
+// Volumue keys
+static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+2%",   NULL };
+static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-2%",   NULL };
 static const char *mute_vol[] = { "pactl", "set-sink-mute",   "@DEFAULT_SINK@", "toggle", NULL };
+
+// Brightness keys
+static const char *brighter[] = { "brightnessctl", "set", "2%+", NULL };
+static const char *dimmer[]   = { "brightnessctl", "set", "2%-", NULL };
 
 static const char *fonts[]          = { "monospace:size=16" };
 static const char dmenufont[]       = "monospace:size=16";
@@ -37,7 +42,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4" };
+static const char *tags[] = { "1", "2", "3", "4", "5" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -77,7 +82,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */ // col_gray1 col_gray3 custom col_gray4
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_black, "-nf", col_gray3, "-sb", col_customred, "-sf", col_black, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -116,9 +121,14 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 	{ 0,         XK_Print, spawn, SHCMD("/home/omid/scripts/screenshot.sh") },
         { ShiftMask, XK_Print, spawn, SHCMD("/home/omid/scripts/screenshotsel.sh") },
+	{ MODKEY,    XK_Print, spawn, SHCMD("/home/omid/scripts/screenshotcur.sh") },
 	{ 0, XF86XK_AudioMute,        spawn, {.v = mute_vol } },
        	{ 0, XF86XK_AudioLowerVolume, spawn, {.v = down_vol } },
        	{ 0, XF86XK_AudioRaiseVolume, spawn, {.v = up_vol } },
+	{ 0, XF86XK_MonBrightnessDown, spawn, {.v = dimmer } },
+        { 0, XF86XK_MonBrightnessUp,   spawn, {.v = brighter } },
+	{ 0, XF86XK_PowerOff, spawn, SHCMD("/home/omid/scripts/power-button.sh") },
+	{ 0, XK_Super_L, spawn, SHCMD("/home/omid/scripts/session-lock.sh") },
 };
 
 /* button definitions */
